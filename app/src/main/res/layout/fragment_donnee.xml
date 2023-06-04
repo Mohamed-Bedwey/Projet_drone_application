@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DonneeFragment">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPS"
+        android:textSize="30sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="150dp"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="80dp"
+        android:text="Longitude :"/>
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="30dp"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitude :"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="160dp"/>
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="160dp"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vitesse :"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="270dp"/>
+
+    <TextView
+        android:id="@+id/vitesse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="270dp"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature :"
+        android:layout_marginTop="280dp"
+        android:layout_marginLeft="50dp"/>
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="295dp"
+        android:layout_marginLeft="50dp"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Luminosite :"
+        android:layout_marginTop="280dp"
+        android:layout_marginLeft="210dp"/>
+
+    <TextView
+        android:id="@+id/luminosite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="295dp"
+        android:layout_marginLeft="210dp"/>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Son :"
+        android:layout_marginTop="450dp"
+        android:layout_marginLeft="150dp"/>
+
+    <TextView
+        android:id="@+id/son"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginTop="470dp"
+        android:layout_marginLeft="150dp"/>
+
+</FrameLayout>
