@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -35,7 +36,31 @@ public class MapFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull LatLng latLng) {
+
+                        MarkerOptions markerOptions = new MarkerOptions();
+
+                        markerOptions.position(latLng);
+
+                        googleMap.clear();
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
+
+                        googleMap.addMarker(markerOptions);
+
+                    }
+                });
+            }
+        });
+
+
 
         return view;
     }
