@@ -42,14 +42,12 @@ public class DonneeFragment extends Fragment {
     Cell cell = null;
     Row row = null;
     Sheet sheet = excel_file.createSheet("data");
-    private static final String FILE_NAME = "Drone_Data4.xls";
-
     int cpt;
     String[][] data_save = new String[7][14400];
-
-    Random random;
     File myExternfile = null;
     FileOutputStream fileOutputStream = null;
+
+    Random random;
 
     Handler handler;
     Runnable run;
