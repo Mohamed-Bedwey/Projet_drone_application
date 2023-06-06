@@ -157,7 +157,6 @@ public class DonneeFragment extends Fragment {
         Bundle bundle = new Bundle();
         GraphFragment graphFragment = new GraphFragment();
         bundle.putString("data",val);
-        bundle.putString("data2",String.valueOf(cpt));
         graphFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

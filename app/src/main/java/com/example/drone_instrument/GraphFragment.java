@@ -31,14 +31,12 @@ import java.io.IOException;
 
 public class GraphFragment extends Fragment {
 
-    String message, message2;
+    String message;
     TextView msg;
-    int cpt;
+    int nb_ligne;
 
     GraphView graphView;
     String[][] data_tab = new String[5][14400];
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,8 +51,6 @@ public class GraphFragment extends Fragment {
         //================================== Reception du message de donnee fragment ======================================================//
         Bundle bundle = getArguments();
         message = bundle.getString("data");
-        message2 = bundle.getString("data2");
-        cpt = Integer.parseInt(message2);
 
         //================================================== Lecture des données enregistré ===============================================//
 
@@ -87,9 +83,9 @@ public class GraphFragment extends Fragment {
     {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
-        for (int i=0;i<cpt;i++)
+        for (int i=0;i<nb_ligne;i++)
         {
-            series.appendData(new DataPoint(i, Double.parseDouble(data_tab[data][i])),true,cpt+1);
+            series.appendData(new DataPoint(Double.parseDouble(data_tab[0][i]), Double.parseDouble(data_tab[data][i])),true,nb_ligne);
         }
 
         graphView.addSeries(series);
@@ -114,10 +110,14 @@ public class GraphFragment extends Fragment {
             workbook = new HSSFWorkbook(fileInputStream);
             Sheet sheet;
             sheet = workbook.getSheetAt(0);
+            nb_ligne = sheet.getLastRowNum();
 
-            for (int i =0;i<cpt;i++)
+            for (int i =0;i<nb_ligne;i++)
             {
                 Row row = sheet.getRow(i+1);
+
+                Cell cell_time = row.getCell(0);
+                data_tab[0][i] = cell_time.getStringCellValue();
 
                 Cell cell_vitesse = row.getCell(1);
                 data_tab[1][i] = cell_vitesse.getStringCellValue();
@@ -132,7 +132,7 @@ public class GraphFragment extends Fragment {
                 data_tab[4][i] = cell_Son.getStringCellValue();
             }
 
-            //msg.setText(data_tab[1][19]);
+            msg.setText(String.valueOf(nb_ligne));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

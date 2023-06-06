@@ -25,10 +25,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class MapFragment extends Fragment {
 
+    String[][] data_tab = new String[7][14400];
+    int nb_ligne;
     SupportMapFragment supportMapFragment;
-    FusedLocationProviderClient client;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +48,9 @@ public class MapFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+        read_data();
+
+        supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
 
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -47,7 +61,7 @@ public class MapFragment extends Fragment {
 
                         MarkerOptions markerOptions = new MarkerOptions();
 
-                        markerOptions.position(latLng);
+                        markerOptions.position(latLng).title("Time :"+data_tab[0][1]+" Vitesse :"+data_tab[1][1]+" Temp :"+data_tab[1][2]+" Lum :"+data_tab[1][3]+" Son :"+data_tab[1][4]+ " Longi :"+data_tab[1][5]+" Lat :"+data_tab[1][6]);
 
                         googleMap.clear();
 
@@ -60,9 +74,57 @@ public class MapFragment extends Fragment {
             }
         });
 
-
-
         return view;
+    }
+
+    private void read_data() {
+
+        File file = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
+        FileInputStream fileInputStream= null;
+        Workbook workbook;
+
+        try {
+
+            fileInputStream = new FileInputStream(file);
+            workbook = new HSSFWorkbook(fileInputStream);
+            Sheet sheet;
+            sheet = workbook.getSheetAt(0);
+            nb_ligne = sheet.getLastRowNum();
+
+            for (int i =0;i<nb_ligne;i++)
+            {
+                Row row = sheet.getRow(i+1);
+
+                Cell cell_time = row.getCell(0);
+                data_tab[0][i] = cell_time.getStringCellValue();
+
+                Cell cell_vitesse = row.getCell(1);
+                data_tab[1][i] = cell_vitesse.getStringCellValue();
+
+                Cell cell_Temperature = row.getCell(2);
+                data_tab[2][i] = cell_Temperature.getStringCellValue();
+
+                Cell cell_Luminosite = row.getCell(3);
+                data_tab[3][i] = cell_Luminosite.getStringCellValue();
+
+                Cell cell_Son = row.getCell(4);
+                data_tab[4][i] = cell_Son.getStringCellValue();
+
+                Cell cell_Longitude = row.getCell(5);
+                data_tab[5][i] = cell_Longitude.getStringCellValue();
+
+                Cell cell_Latitude = row.getCell(6);
+                data_tab[6][i] = cell_Latitude.getStringCellValue();
+
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
