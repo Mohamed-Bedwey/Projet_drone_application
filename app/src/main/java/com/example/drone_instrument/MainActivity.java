@@ -20,6 +20,12 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     DonneeFragment donneeFragment;
+    Handler handler2;
+    Runnable run2;
+    Bundle bundle;
+
+    int cpt;
+    String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +34,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        handler2 = new Handler();
+        bundle = new Bundle();
+
         donneeFragment = new DonneeFragment();
 
         replaceFragment(donneeFragment);
+
+        donneeFragment.setArguments(bundle);
 
         //======================================= Ouverture de fragment via la barre de navigation ========================================//
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -46,6 +57,19 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+//        run2 = new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                cpt ++;
+//                bundle.putString("data_test",String.valueOf(cpt));
+//                handler2.postDelayed(this,1000);
+//
+//            }
+//        };
+//        handler2.post(run2);
     }
 
     private void replaceFragment (Fragment fragment) // Ouverture d'un fragment
@@ -55,4 +79,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
+
+
 }

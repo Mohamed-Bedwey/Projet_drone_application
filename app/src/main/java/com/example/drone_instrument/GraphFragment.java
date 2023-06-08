@@ -2,15 +2,18 @@ package com.example.drone_instrument;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +37,12 @@ public class GraphFragment extends Fragment {
     String message;
     TextView msg;
     int nb_ligne;
+    Button bp_refresh,bp2;
 
     GraphView graphView;
     String[][] data_tab = new String[5][14400];
+    LineGraphSeries<DataPoint> series;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +51,8 @@ public class GraphFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
 
         msg = (TextView) view.findViewById(R.id.msg_graph);
+        bp_refresh = (Button) view.findViewById(R.id.button_refresh);
+        bp2 = (Button) view.findViewById(R.id.button2);
         graphView = (GraphView) view.findViewById(R.id.graph);
         graphView.getViewport().setScalable(true);
 
@@ -76,12 +84,13 @@ public class GraphFragment extends Fragment {
                 creation_graph(message,Color.RED,4);
                 break;
         }
+
         return view;
     }
 
     void creation_graph(String title, int color, int data) // Creation d'un graphique
     {
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        series = new LineGraphSeries<>();
 
         for (int i=0;i<nb_ligne;i++)
         {
@@ -94,7 +103,6 @@ public class GraphFragment extends Fragment {
         graphView.setTitle(title);
         graphView.setTitleTextSize(90);
         series.setDrawDataPoints(true);
-
 
     }
 
@@ -144,5 +152,10 @@ public class GraphFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+    }
 }
+

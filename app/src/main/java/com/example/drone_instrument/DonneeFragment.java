@@ -52,6 +52,8 @@ public class DonneeFragment extends Fragment {
     Handler handler;
     Runnable run;
 
+    String msg_recue;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class DonneeFragment extends Fragment {
 
         random = new Random();
         handler = new Handler();
+        Bundle bundle = getArguments();
 
         //========================================= Affichage du graph =====================================================//
 
@@ -138,7 +141,9 @@ public class DonneeFragment extends Fragment {
                 data_save[5][cpt] = String.valueOf(val5);
 
                 int val6 = random.nextInt(500); // Latitude
+//                msg_recue = bundle.getString("data_test");
                 alt_msg.setText(String.valueOf(val6));
+//                alt_msg.setText(msg_recue);
                 data_save[6][cpt] = String.valueOf(val6);
 
                 cpt++;
