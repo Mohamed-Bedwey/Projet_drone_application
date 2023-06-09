@@ -39,10 +39,12 @@ public class GraphFragment extends Fragment {
     int nb_ligne;
     Button bp_refresh,bp2;
 
+    Fragment fragment;
+
     GraphView graphView;
     String[][] data_tab = new String[5][14400];
     LineGraphSeries<DataPoint> series;
-
+    String msg_refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +67,17 @@ public class GraphFragment extends Fragment {
         read_data();
 
         //============================================ Affichage du graphe ================================================================//
+        bp_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+//                Intent intent = new Intent(getActivity(), MainActivity.class);
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putString("refresh_data","refresh");
+//                intent.putExtras(bundle1);
+
+            }
+        });
         switch (message)
         {
             case "Vitesse":

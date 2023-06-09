@@ -129,8 +129,10 @@ public class DonneeFragment extends Fragment {
                 data_save[2][cpt] = String.valueOf(val2);
 
                 int val3 = random.nextInt(500); // Luminosite
+                //msg_recue = bundle.getString("data_test");
                 lum_msg.setText(String.valueOf(val3));
-                data_save[3][cpt] = String.valueOf(val3);
+                //data_save[3][cpt] = msg_recue;
+                data_save[3][cpt] = String.valueOf(val3);;
 
                 int val4 = random.nextInt(500); // Son
                 son_msg.setText(String.valueOf(val4));
@@ -141,9 +143,7 @@ public class DonneeFragment extends Fragment {
                 data_save[5][cpt] = String.valueOf(val5);
 
                 int val6 = random.nextInt(500); // Latitude
-//                msg_recue = bundle.getString("data_test");
                 alt_msg.setText(String.valueOf(val6));
-//                alt_msg.setText(msg_recue);
                 data_save[6][cpt] = String.valueOf(val6);
 
                 cpt++;
@@ -169,7 +169,7 @@ public class DonneeFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private void write_data () //Ecriture de données dans un fichier excel
+    void write_data () //Ecriture de données dans un fichier excel
     {
 
         row = sheet.createRow(0);
