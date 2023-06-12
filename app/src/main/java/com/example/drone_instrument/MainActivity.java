@@ -24,20 +24,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-
-    TextView textView;
     DonneeFragment donneeFragment;
-    GraphFragment graphFragment;
-    Handler handler2;
-    Runnable run2;
-    Bundle bundle;
-
-    int cpt;
-    String msg;
-
-    String msg_graph;
-
-    Button refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +33,11 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        textView = (TextView) findViewById(R.id.text_test);
-        refresh = (Button) findViewById(R.id.button_refresh);
-
-        handler2 = new Handler();
-        bundle = new Bundle();
-
-        //msg_graph = getIntent().getExtras().getString("refresh_data");
-
         donneeFragment = new DonneeFragment();
 
         replaceFragment(donneeFragment);
 
-        //donneeFragment.setArguments(bundle);
-
-
-
-        //======================================= Ouverture de fragment via la barre de navigation ========================================//
+        //======================================= Affichage d'un fragment via la barre de navigation ========================================//
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()){
@@ -77,33 +52,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-//        run2 = new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                cpt ++;
-//                bundle.putString("data_test",String.valueOf(cpt));
-//
-//
-//                handler2.postDelayed(this,1000);
-//
-//            }
-//        };
-//        handler2.post(run2);
+
     }
 
-    private void replaceFragment (Fragment fragment) // Ouverture d'un fragment
+    private void replaceFragment (Fragment fragment) // Affichage d'un fragment
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
-    }
-
-    void refresh_graph ()
-    {
-        donneeFragment.write_data();
     }
 
 

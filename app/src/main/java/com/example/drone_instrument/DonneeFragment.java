@@ -36,14 +36,14 @@ import java.util.Random;
 
 public class DonneeFragment extends Fragment {
 
-    TextView long_msg,alt_msg,vit_msg,temp_msg,lum_msg,son_msg;
+    TextView long_msg,lati_msg,vit_msg,temp_msg,lum_msg,son_msg,alti_msg;
 
     Workbook excel_file = new HSSFWorkbook();
     Cell cell = null;
     Row row = null;
     Sheet sheet = excel_file.createSheet("data");
     int cpt;
-    String[][] data_save = new String[7][14400];
+    String[][] data_save = new String[8][14400];
     File myExternfile = null;
     FileOutputStream fileOutputStream = null;
 
@@ -52,34 +52,33 @@ public class DonneeFragment extends Fragment {
     Handler handler;
     Runnable run;
 
-    String msg_recue;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_donnee, container, false);
 
-        //===================================== Initialisation des textView ===============================================//
+        //===================================== Initialisation des textView =============================================//
 
         long_msg = (TextView) view.findViewById(R.id.longitude);
-        alt_msg = (TextView) view.findViewById(R.id.latitude);
+        lati_msg = (TextView) view.findViewById(R.id.latitude);
         vit_msg = (TextView) view.findViewById(R.id.vitesse);
         temp_msg = (TextView) view.findViewById(R.id.temperature);
         lum_msg = (TextView) view.findViewById(R.id.luminosite);
         son_msg = (TextView) view.findViewById(R.id.son);
+        alti_msg = (TextView) view.findViewById(R.id.altitude);
+
+        myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
 
         random = new Random();
         handler = new Handler();
-        Bundle bundle = getArguments();
 
-        //========================================= Affichage du graph =====================================================//
+        //========================== Affichage du graph en fonction de la donnée souhaiter ============================//
 
         vit_msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write_data();
-                Toast.makeText(getContext(), "click vit", Toast.LENGTH_SHORT).show();
                 Graph_data("Vitesse");
             }
         });
@@ -88,7 +87,6 @@ public class DonneeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 write_data();
-                Toast.makeText(getContext(), "click temp", Toast.LENGTH_SHORT).show();
                 Graph_data("Temperature");
             }
         });
@@ -97,7 +95,6 @@ public class DonneeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 write_data();
-                Toast.makeText(getContext(), "click lum", Toast.LENGTH_SHORT).show();
                 Graph_data("Luminosite");
             }
         });
@@ -106,13 +103,11 @@ public class DonneeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 write_data();
-                Toast.makeText(getContext(), "click son", Toast.LENGTH_SHORT).show();
                 Graph_data("Son");
             }
         });
 
-        //======================================== Affichage des données recue en temp réel (aléatoire) ================================================//
-
+        //======================== Affichage des données recue en temp réel (aléatoire) ==========//
         run = new Runnable() {
 
             @Override
@@ -129,9 +124,7 @@ public class DonneeFragment extends Fragment {
                 data_save[2][cpt] = String.valueOf(val2);
 
                 int val3 = random.nextInt(500); // Luminosite
-                //msg_recue = bundle.getString("data_test");
                 lum_msg.setText(String.valueOf(val3));
-                //data_save[3][cpt] = msg_recue;
                 data_save[3][cpt] = String.valueOf(val3);;
 
                 int val4 = random.nextInt(500); // Son
@@ -143,8 +136,12 @@ public class DonneeFragment extends Fragment {
                 data_save[5][cpt] = String.valueOf(val5);
 
                 int val6 = random.nextInt(500); // Latitude
-                alt_msg.setText(String.valueOf(val6));
+                lati_msg.setText(String.valueOf(val6));
                 data_save[6][cpt] = String.valueOf(val6);
+
+                int val7 = random.nextInt(500); // Altitude
+                alti_msg.setText(String.valueOf(val7));
+                data_save[7][cpt] = String.valueOf(val7);
 
                 cpt++;
 
@@ -157,10 +154,11 @@ public class DonneeFragment extends Fragment {
         return view;
     }
 
-    private void Graph_data (String val) // Ouverture d'un fragment
+    private void Graph_data (String val) // Affichage du graph_fragment
     {
         Bundle bundle = new Bundle();
         GraphFragment graphFragment = new GraphFragment();
+        graphFragment.donneeFragment = this;
         bundle.putString("data",val);
         graphFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -195,6 +193,9 @@ public class DonneeFragment extends Fragment {
         cell = row.createCell(6);
         cell.setCellValue("Latitude");
 
+        cell = row.createCell(7);
+        cell.setCellValue("Altitude");
+
         sheet.setColumnWidth(0,(20*200));
         sheet.setColumnWidth(1,(20*200));
         sheet.setColumnWidth(2,(20*200));
@@ -202,6 +203,7 @@ public class DonneeFragment extends Fragment {
         sheet.setColumnWidth(4,(20*300));
         sheet.setColumnWidth(5,(20*300));
         sheet.setColumnWidth(6,(20*300));
+        sheet.setColumnWidth(7,(20*300));
 
         for (int i =0;i<cpt;i++)
         {
@@ -227,16 +229,16 @@ public class DonneeFragment extends Fragment {
 
             cell = row.createCell(6);
             cell.setCellValue(data_save[6][i]);
+
+            cell = row.createCell(7);
+            cell.setCellValue(data_save[7][i]);
         }
 
         try {
-            myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
             fileOutputStream = new FileOutputStream(myExternfile);
             excel_file.write(fileOutputStream);
-            Toast.makeText(getActivity(),"save",Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
         }
     }
 

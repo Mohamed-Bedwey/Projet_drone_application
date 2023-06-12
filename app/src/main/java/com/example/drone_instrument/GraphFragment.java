@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,67 +36,49 @@ import java.io.IOException;
 public class GraphFragment extends Fragment {
 
     String message;
-    TextView msg;
     int nb_ligne;
-    Button bp_refresh,bp2;
-
-    Fragment fragment;
+    ImageButton bp_refresh;
 
     GraphView graphView;
     String[][] data_tab = new String[5][14400];
     LineGraphSeries<DataPoint> series;
-    String msg_refresh;
+    DonneeFragment donneeFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
-
-        msg = (TextView) view.findViewById(R.id.msg_graph);
-        bp_refresh = (Button) view.findViewById(R.id.button_refresh);
-        bp2 = (Button) view.findViewById(R.id.button2);
+        bp_refresh = (ImageButton) view.findViewById(R.id.button_refresh);
         graphView = (GraphView) view.findViewById(R.id.graph);
         graphView.getViewport().setScalable(true);
 
-        //================================== Reception du message de donnee fragment ======================================================//
+        //=========== Reception du message de donnee fragment ====================//
+
         Bundle bundle = getArguments();
         message = bundle.getString("data");
 
-        //================================================== Lecture des données enregistré ===============================================//
+        //================= Lecture des données enregistré ==================//
 
         read_data();
 
-        //============================================ Affichage du graphe ================================================================//
+        //=================== Affichage du graphe ============================//
+
+        data_graph();
+
+        // ========================= Refresh graph =============================== //
+
         bp_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                Bundle bundle1 = new Bundle();
-//                bundle1.putString("refresh_data","refresh");
-//                intent.putExtras(bundle1);
+                donneeFragment.write_data();
+                read_data();
+                data_graph();
+                Toast.makeText(getContext(), "Donnée actualiser", Toast.LENGTH_SHORT).show();
 
             }
         });
-        switch (message)
-        {
-            case "Vitesse":
-                creation_graph(message,Color.YELLOW,1);
-                break;
-
-            case "Temperature":
-                creation_graph(message,Color.BLUE,2);
-                break;
-
-            case "Luminosite":
-                creation_graph(message,Color.CYAN,3);
-                break;
-
-            case "Son":
-                creation_graph(message,Color.RED,4);
-                break;
-        }
 
         return view;
     }
@@ -152,8 +135,6 @@ public class GraphFragment extends Fragment {
                 data_tab[4][i] = cell_Son.getStringCellValue();
             }
 
-            msg.setText(String.valueOf(nb_ligne));
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
@@ -164,10 +145,28 @@ public class GraphFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void data_graph()
+    {
+        switch (message)
+        {
+            case "Vitesse":
+                creation_graph(message,Color.YELLOW,1);
+                break;
+
+            case "Temperature":
+                creation_graph(message,Color.BLUE,2);
+                break;
+
+            case "Luminosite":
+                creation_graph(message,Color.CYAN,3);
+                break;
+
+            case "Son":
+                creation_graph(message,Color.RED,4);
+                break;
+        }
 
     }
+
 }
 
