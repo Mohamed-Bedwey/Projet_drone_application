@@ -73,6 +73,10 @@ public class DonneeFragment extends Fragment {
         random = new Random();
         handler = new Handler();
 
+        // ========================================== Dessin ==========================================//
+
+        dessin();
+
         //========================== Affichage du graph en fonction de la donnée souhaiter ============================//
 
         vit_msg.setOnClickListener(new View.OnClickListener() {
@@ -246,5 +250,9 @@ public class DonneeFragment extends Fragment {
     {
         handler.removeCallbacks(run);
     }
+
+    private void dessin() {
+    }
+
 
 }

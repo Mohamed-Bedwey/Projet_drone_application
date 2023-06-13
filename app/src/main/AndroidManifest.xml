@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Drone_instrumenté">
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBcGAu7UE-XsJqPRxu73yNazjuHtGeGyj0"/>

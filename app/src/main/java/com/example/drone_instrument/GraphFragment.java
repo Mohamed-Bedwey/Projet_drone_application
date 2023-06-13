@@ -75,7 +75,7 @@ public class GraphFragment extends Fragment {
                 donneeFragment.write_data();
                 read_data();
                 data_graph();
-                Toast.makeText(getContext(), "Donnée actualiser", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Données actualisées", Toast.LENGTH_SHORT).show();
 
             }
         });
