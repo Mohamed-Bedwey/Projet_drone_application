@@ -61,7 +61,7 @@ public class MapFragment extends Fragment {
 
                         MarkerOptions markerOptions = new MarkerOptions();
 
-                        markerOptions.position(latLng).title("Time :"+data_tab[0][1]+" Vitesse :"+data_tab[1][1]+" Temp :"+data_tab[1][2]+" Lum :"+data_tab[1][3]+" Son :"+data_tab[1][4]+ " Longi :"+data_tab[1][5]+" Lat :"+data_tab[1][6]);
+                        markerOptions.position(latLng).title(" V: "+data_tab[1][0]+" Te: "+data_tab[1][1]+" Lu: "+data_tab[1][2]+" Son: "+data_tab[1][3]+ " Lon: "+data_tab[1][4]+" Lat: "+data_tab[1][5]+" Alt: "+data_tab[1][6]);
 
                         googleMap.clear();
 
@@ -95,26 +95,26 @@ public class MapFragment extends Fragment {
             {
                 Row row = sheet.getRow(i+1);
 
-                Cell cell_time = row.getCell(0);
-                data_tab[0][i] = cell_time.getStringCellValue();
-
                 Cell cell_vitesse = row.getCell(1);
-                data_tab[1][i] = cell_vitesse.getStringCellValue();
+                data_tab[0][i] = cell_vitesse.getStringCellValue();
 
                 Cell cell_Temperature = row.getCell(2);
-                data_tab[2][i] = cell_Temperature.getStringCellValue();
+                data_tab[1][i] = cell_Temperature.getStringCellValue();
 
                 Cell cell_Luminosite = row.getCell(3);
-                data_tab[3][i] = cell_Luminosite.getStringCellValue();
+                data_tab[2][i] = cell_Luminosite.getStringCellValue();
 
                 Cell cell_Son = row.getCell(4);
-                data_tab[4][i] = cell_Son.getStringCellValue();
+                data_tab[3][i] = cell_Son.getStringCellValue();
 
                 Cell cell_Longitude = row.getCell(5);
-                data_tab[5][i] = cell_Longitude.getStringCellValue();
+                data_tab[4][i] = cell_Longitude.getStringCellValue();
 
                 Cell cell_Latitude = row.getCell(6);
-                data_tab[6][i] = cell_Latitude.getStringCellValue();
+                data_tab[5][i] = cell_Latitude.getStringCellValue();
+
+                Cell cell_Altitude = row.getCell(7);
+                data_tab[6][i] = cell_Altitude.getStringCellValue();
 
             }
 

@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class DonneeFragment extends Fragment {
@@ -252,6 +254,8 @@ public class DonneeFragment extends Fragment {
     }
 
     private void dessin() {
+
+
     }
 
 
