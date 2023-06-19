@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ import java.util.Random;
 public class DonneeFragment extends Fragment {
 
     TextView long_msg,lati_msg,vit_msg,temp_msg,lum_msg,son_msg,alti_msg;
+    ImageView img_vit,img_son,img_lum,img_temp;
 
     Workbook excel_file = new HSSFWorkbook();
     Cell cell = null;
@@ -70,6 +72,11 @@ public class DonneeFragment extends Fragment {
         son_msg = (TextView) view.findViewById(R.id.son);
         alti_msg = (TextView) view.findViewById(R.id.altitude);
 
+        img_lum = (ImageView) view.findViewById(R.id.imageLuminosite);
+        img_son = (ImageView) view.findViewById(R.id.imageSon);
+        img_temp = (ImageView) view.findViewById(R.id.imageTemperature);
+        img_vit = (ImageView) view.findViewById(R.id.imageVitesse);
+
         myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
 
         random = new Random();
@@ -81,7 +88,7 @@ public class DonneeFragment extends Fragment {
 
         //========================== Affichage du graph en fonction de la donnée souhaiter ============================//
 
-        vit_msg.setOnClickListener(new View.OnClickListener() {
+        img_vit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write_data();
@@ -89,7 +96,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        temp_msg.setOnClickListener(new View.OnClickListener() {
+        img_temp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write_data();
@@ -97,7 +104,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        lum_msg.setOnClickListener(new View.OnClickListener() {
+        img_lum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write_data();
@@ -105,7 +112,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        son_msg.setOnClickListener(new View.OnClickListener() {
+        img_son.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 write_data();
