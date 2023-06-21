@@ -51,32 +51,27 @@ public class GraphFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
-        bp_refresh = (ImageButton) view.findViewById(R.id.button_refresh);
+        bp_refresh = (ImageButton) view.findViewById(R.id.button_refresh_graph);
         graphView = (GraphView) view.findViewById(R.id.graph);
         graphView.getViewport().setScalable(true);
 
-        //=========== Reception du message de donnee fragment ====================//
-
+        // Reception du message de DonneFragment
         Bundle bundle = getArguments();
         message = bundle.getString("data");
 
-        //================= Lecture des données enregistré ==================//
+        read_data(); // Lecture des données enregistrée dans la base de données
 
-        read_data();
+        data_graph(); // Affichage du graph
 
-        //=================== Affichage du graphe ============================//
-
-        data_graph();
-
-        // ========================= Refresh graph =============================== //
+        // ================= Actualisation de l'affichage du graphique ========================== //
 
         bp_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                donneeFragment.write_data();
-                read_data();
-                data_graph();
+                donneeFragment.write_data(); // Ecriture des données dans la base de données Excel
+                read_data(); // Lecture des données enregistrée dans la base de données
+                data_graph(); // Affichage du graph
                 Toast.makeText(getContext(), "Données actualisées", Toast.LENGTH_SHORT).show();
 
             }
@@ -89,23 +84,23 @@ public class GraphFragment extends Fragment {
     {
         series = new LineGraphSeries<>();
 
-        for (int i=0;i<nb_ligne;i++)
+        for (int i=0;i<nb_ligne;i++) // Ajout de points sur le graphique
         {
             series.appendData(new DataPoint(Double.parseDouble(data_tab[0][i]), Double.parseDouble(data_tab[data][i])),true,nb_ligne);
         }
 
         graphView.addSeries(series);
 
-        series.setColor(color);
-        graphView.setTitle(title);
-        graphView.setTitleTextSize(90);
-        series.setDrawDataPoints(true);
+        series.setColor(color); // Couleur de la courbe
+        graphView.setTitle(title); // Titre du graphique
+        graphView.setTitleTextSize(90); // Taille du titre
+        series.setDrawDataPoints(true); // Affichage des points qui composent la courbe
 
     }
 
     private void read_data()
     {
-        File file = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
+        File file = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls"); // Chemin de la base de données Excel dans le stockage interne du téléphone
         FileInputStream fileInputStream= null;
         Workbook workbook;
 
@@ -117,12 +112,12 @@ public class GraphFragment extends Fragment {
             sheet = workbook.getSheetAt(0);
             nb_ligne = sheet.getLastRowNum();
 
-            for (int i =0;i<nb_ligne;i++)
+            for (int i =0;i<nb_ligne;i++) // Lecture du contenue du fichier Excel et stockage dans un tableau
             {
-                Row row = sheet.getRow(i+1);
+                Row row = sheet.getRow(i+1); // Le numéro de ligne du tableau Excel
 
-                Cell cell_time = row.getCell(0);
-                data_tab[0][i] = cell_time.getStringCellValue();
+                Cell cell_time = row.getCell(0); // Le numéro de colonne tableau Excel
+                data_tab[0][i] = cell_time.getStringCellValue(); // Recupération du contenu
 
                 Cell cell_vitesse = row.getCell(1);
                 data_tab[1][i] = cell_vitesse.getStringCellValue();
@@ -149,7 +144,7 @@ public class GraphFragment extends Fragment {
 
     private void data_graph()
     {
-        switch (message)
+        switch (message) // Affichage du graphique en fonction de la donnée demander
         {
             case "Vitesse":
                 creation_graph(message,Color.YELLOW,1);

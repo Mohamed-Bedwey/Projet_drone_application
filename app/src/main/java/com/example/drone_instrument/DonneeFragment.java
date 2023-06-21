@@ -47,7 +47,7 @@ public class DonneeFragment extends Fragment {
     Row row = null;
     Sheet sheet = excel_file.createSheet("data");
     int cpt;
-    String[][] data_save = new String[8][14400];
+    String[][] save_data = new String[8][14400];
     File myExternfile = null;
     FileOutputStream fileOutputStream = null;
 
@@ -62,7 +62,7 @@ public class DonneeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_donnee, container, false);
 
-        //===================================== Initialisation des textView =============================================//
+        //===================================== Initialisation des textView et des ImageView =============================================//
 
         long_msg = (TextView) view.findViewById(R.id.longitude);
         lati_msg = (TextView) view.findViewById(R.id.latitude);
@@ -77,7 +77,7 @@ public class DonneeFragment extends Fragment {
         img_temp = (ImageView) view.findViewById(R.id.imageTemperature);
         img_vit = (ImageView) view.findViewById(R.id.imageVitesse);
 
-        myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
+        myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls"); // Chemin de la base de données Excel dans le stockage interne du téléphone
 
         random = new Random();
         handler = new Handler();
@@ -85,7 +85,7 @@ public class DonneeFragment extends Fragment {
 
         //========================== Affichage du graph en fonction de la donnée souhaiter ============================//
 
-        img_vit.setOnClickListener(new View.OnClickListener() {
+        img_vit.setOnClickListener(new View.OnClickListener() { // Affichage du graph de la vitesse
             @Override
             public void onClick(View v) {
                 write_data();
@@ -93,7 +93,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        img_temp.setOnClickListener(new View.OnClickListener() {
+        img_temp.setOnClickListener(new View.OnClickListener() { // Affichage du graph de la Temperature
             @Override
             public void onClick(View v) {
                 write_data();
@@ -101,7 +101,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        img_lum.setOnClickListener(new View.OnClickListener() {
+        img_lum.setOnClickListener(new View.OnClickListener() { // Affichage du graph de la Luminosite
             @Override
             public void onClick(View v) {
                 write_data();
@@ -109,7 +109,7 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        img_son.setOnClickListener(new View.OnClickListener() {
+        img_son.setOnClickListener(new View.OnClickListener() { // Affichage du graph du son
             @Override
             public void onClick(View v) {
                 write_data();
@@ -117,45 +117,45 @@ public class DonneeFragment extends Fragment {
             }
         });
 
-        //======================== Affichage des données recue en temp réel (aléatoire) ==========//
+        //======================== Affichage des données recue en temps réel (aléatoire) ==========//
         run = new Runnable() {
 
             @Override
             public void run() {
 
-                data_save[0][cpt] = String.valueOf(cpt); // Temps
+                save_data[0][cpt] = String.valueOf(cpt); // Temps
 
-                int val = random.nextInt(500); // Vitesse
-                vit_msg.setText(String.valueOf(val));
-                data_save[1][cpt] = String.valueOf(val);
+                int val = random.nextInt(500); // Vitesse : génération de valeur aléatoire
+                vit_msg.setText(String.valueOf(val)); // Affichage de la valeur sur l'application
+                save_data[1][cpt] = String.valueOf(val); // Stockage de la valeur dans un tableau
 
                 int val2 = random.nextInt(500); // Temperature
                 temp_msg.setText(String.valueOf(val2));
-                data_save[2][cpt] = String.valueOf(val2);
+                save_data[2][cpt] = String.valueOf(val2);
 
                 int val3 = random.nextInt(500); // Luminosite
                 lum_msg.setText(String.valueOf(val3));
-                data_save[3][cpt] = String.valueOf(val3);;
+                save_data[3][cpt] = String.valueOf(val3);;
 
                 int val4 = random.nextInt(500); // Son
                 son_msg.setText(String.valueOf(val4));
-                data_save[4][cpt] = String.valueOf(val4);
+                save_data[4][cpt] = String.valueOf(val4);
 
                 int val5 = random.nextInt(500); // Longitude
                 long_msg.setText(String.valueOf(val5));
-                data_save[5][cpt] = String.valueOf(val5);
+                save_data[5][cpt] = String.valueOf(val5);
 
                 int val6 = random.nextInt(500); // Latitude
                 lati_msg.setText(String.valueOf(val6));
-                data_save[6][cpt] = String.valueOf(val6);
+                save_data[6][cpt] = String.valueOf(val6);
 
                 int val7 = random.nextInt(500); // Altitude
                 alti_msg.setText(String.valueOf(val7));
-                data_save[7][cpt] = String.valueOf(val7);
+                save_data[7][cpt] = String.valueOf(val7);
 
                 cpt++;
 
-                handler.postDelayed(this,1000);
+                handler.postDelayed(this,1000); // Rafraichissement toutes les secondes
 
             }
         };
@@ -169,7 +169,7 @@ public class DonneeFragment extends Fragment {
         Bundle bundle = new Bundle();
         GraphFragment graphFragment = new GraphFragment();
         graphFragment.donneeFragment = this;
-        bundle.putString("data",val);
+        bundle.putString("data",val); // Envoie de donnée au GraphFragment
         graphFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -177,9 +177,10 @@ public class DonneeFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-    void write_data () //Ecriture de données dans un fichier excel
+    void write_data () // // Ecriture des données dans la base de données Excel
     {
 
+        // =========== Creation des colonnes ============== //
         row = sheet.createRow(0);
 
         cell = row.createCell(0);
@@ -206,6 +207,7 @@ public class DonneeFragment extends Fragment {
         cell = row.createCell(7);
         cell.setCellValue("Altitude");
 
+        // ================= taille des colones ============== //
         sheet.setColumnWidth(0,(20*200));
         sheet.setColumnWidth(1,(20*200));
         sheet.setColumnWidth(2,(20*200));
@@ -215,36 +217,36 @@ public class DonneeFragment extends Fragment {
         sheet.setColumnWidth(6,(20*300));
         sheet.setColumnWidth(7,(20*300));
 
-        for (int i =0;i<cpt;i++)
+        for (int i =0;i<cpt;i++) // Ecriture des données du tableau dans la base de donnée Excel
         {
             row = sheet.createRow(i+1);
 
             cell = row.createCell(0);
-            cell.setCellValue(data_save[0][i]);
+            cell.setCellValue(save_data[0][i]);
 
             cell = row.createCell(1);
-            cell.setCellValue(data_save[1][i]);
+            cell.setCellValue(save_data[1][i]);
 
             cell = row.createCell(2);
-            cell.setCellValue(data_save[2][i]);
+            cell.setCellValue(save_data[2][i]);
 
             cell = row.createCell(3);
-            cell.setCellValue(data_save[3][i]);
+            cell.setCellValue(save_data[3][i]);
 
             cell = row.createCell(4);
-            cell.setCellValue(data_save[4][i]);
+            cell.setCellValue(save_data[4][i]);
 
             cell = row.createCell(5);
-            cell.setCellValue(data_save[5][i]);
+            cell.setCellValue(save_data[5][i]);
 
             cell = row.createCell(6);
-            cell.setCellValue(data_save[6][i]);
+            cell.setCellValue(save_data[6][i]);
 
             cell = row.createCell(7);
-            cell.setCellValue(data_save[7][i]);
+            cell.setCellValue(save_data[7][i]);
         }
 
-        try {
+        try { // Enregistrement du fichier Excel dans le stockage interne du téléphone
             fileOutputStream = new FileOutputStream(myExternfile);
             excel_file.write(fileOutputStream);
         } catch (IOException e) {

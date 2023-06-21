@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -38,9 +39,11 @@ import java.io.IOException;
 
 public class MapFragment extends Fragment {
 
-    String[][] data_tab = new String[7][14400];
+    String[][] data = new String[7][14400];
     int nb_ligne;
+    ImageButton bp_refresh;
     SupportMapFragment supportMapFragment;
+    DonneeFragment donneeFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,29 +51,24 @@ public class MapFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        read_data();
-
+        bp_refresh = (ImageButton) view.findViewById(R.id.button_refresh_map);
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
 
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+
+        donneeFragment.write_data(); // Ecriture des données dans la base de données Excel
+        read_data(); // Lecture des données enregistrée dans la base de données
+        ecriture_map(); // Affichage des points sur la map
+
+        // ================= Actualisation de l'affichage de la map =================//
+        bp_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onMapReady(@NonNull GoogleMap googleMap) {
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull LatLng latLng) {
+            public void onClick(View view) {
 
-                        MarkerOptions markerOptions = new MarkerOptions();
+                donneeFragment.write_data();
+                read_data();
+                ecriture_map();
+                Toast.makeText(getContext(), "Données actualisées", Toast.LENGTH_SHORT).show();
 
-                        markerOptions.position(latLng).title(" V: "+data_tab[1][0]+" Te: "+data_tab[1][1]+" Lu: "+data_tab[1][2]+" Son: "+data_tab[1][3]+ " Alt: "+data_tab[1][6]);
-
-                        googleMap.clear();
-
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
-
-                        googleMap.addMarker(markerOptions);
-
-                    }
-                });
             }
         });
 
@@ -79,7 +77,7 @@ public class MapFragment extends Fragment {
 
     private void read_data() {
 
-        File file = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls");
+        File file = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls"); // Chemin de la base de données Excel dans le stockage interne du téléphone
         FileInputStream fileInputStream= null;
         Workbook workbook;
 
@@ -91,30 +89,30 @@ public class MapFragment extends Fragment {
             sheet = workbook.getSheetAt(0);
             nb_ligne = sheet.getLastRowNum();
 
-            for (int i =0;i<nb_ligne;i++)
+            for (int i =0;i<nb_ligne;i++) // Lecture du contenue du fichier Excel et stockage dans un tableau
             {
-                Row row = sheet.getRow(i+1);
+                Row row = sheet.getRow(i+1); // Le numéro de ligne du tableau Excel
 
-                Cell cell_vitesse = row.getCell(1);
-                data_tab[0][i] = cell_vitesse.getStringCellValue();
+                Cell cell_vitesse = row.getCell(1); // Le numéro de colonne tableau Excel
+                data[0][i] = cell_vitesse.getStringCellValue(); // Recupération du contenu
 
                 Cell cell_Temperature = row.getCell(2);
-                data_tab[1][i] = cell_Temperature.getStringCellValue();
+                data[1][i] = cell_Temperature.getStringCellValue();
 
                 Cell cell_Luminosite = row.getCell(3);
-                data_tab[2][i] = cell_Luminosite.getStringCellValue();
+                data[2][i] = cell_Luminosite.getStringCellValue();
 
                 Cell cell_Son = row.getCell(4);
-                data_tab[3][i] = cell_Son.getStringCellValue();
+                data[3][i] = cell_Son.getStringCellValue();
 
                 Cell cell_Longitude = row.getCell(5);
-                data_tab[4][i] = cell_Longitude.getStringCellValue();
+                data[4][i] = cell_Longitude.getStringCellValue();
 
                 Cell cell_Latitude = row.getCell(6);
-                data_tab[5][i] = cell_Latitude.getStringCellValue();
+                data[5][i] = cell_Latitude.getStringCellValue();
 
                 Cell cell_Altitude = row.getCell(7);
-                data_tab[6][i] = cell_Altitude.getStringCellValue();
+                data[6][i] = cell_Altitude.getStringCellValue();
 
             }
 
@@ -125,6 +123,24 @@ public class MapFragment extends Fragment {
             e.printStackTrace();
             Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void ecriture_map()
+    {
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+
+                for (int i=0;i<nb_ligne;i++) // Affichage des points sur la carte en récupérant les données GPS stocké dans le tableau
+                {
+                    LatLng latLng = new LatLng(Double.parseDouble(data[5][i]),Double.parseDouble(data[4][i]));
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                    markerOptions.title(" Vit: "+data[1][0]+" Tem: "+data[1][1]+" Lum: "+data[1][2]+" Son: "+data[1][3]+ " Alt: "+data[1][6]);
+                    googleMap.addMarker(markerOptions);
+                }
+            }
+        });
+
     }
 
 }

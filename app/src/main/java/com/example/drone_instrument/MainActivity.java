@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     DonneeFragment donneeFragment;
+    MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Initialisation des pages
         donneeFragment = new DonneeFragment();
+        mapFragment = new MapFragment();
 
         replaceFragment(donneeFragment);
 
@@ -41,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
             switch (item.getItemId()){
-                case R.id.donnée:
+                case R.id.donnée: // Affichage de DonneeFragment
                     donneeFragment.removeHandler();
                     replaceFragment(donneeFragment);
                     break;
-                case R.id.map:
-                    replaceFragment(new MapFragment());
+                case R.id.map: // Affichage de MapFragment
+                    replaceFragment(mapFragment);
+                    mapFragment.donneeFragment = donneeFragment;
                     break;
             }
             return true;
