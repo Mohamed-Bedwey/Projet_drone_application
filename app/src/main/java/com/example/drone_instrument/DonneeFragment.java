@@ -82,9 +82,6 @@ public class DonneeFragment extends Fragment {
         random = new Random();
         handler = new Handler();
 
-        // ========================================== Dessin ==========================================//
-
-        dessin();
 
         //========================== Affichage du graph en fonction de la donnée souhaiter ============================//
 
@@ -258,11 +255,6 @@ public class DonneeFragment extends Fragment {
     public void removeHandler()
     {
         handler.removeCallbacks(run);
-    }
-
-    private void dessin() {
-
-
     }
 
 

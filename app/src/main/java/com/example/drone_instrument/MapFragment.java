@@ -61,7 +61,7 @@ public class MapFragment extends Fragment {
 
                         MarkerOptions markerOptions = new MarkerOptions();
 
-                        markerOptions.position(latLng).title(" V: "+data_tab[1][0]+" Te: "+data_tab[1][1]+" Lu: "+data_tab[1][2]+" Son: "+data_tab[1][3]+ " Lon: "+data_tab[1][4]+" Lat: "+data_tab[1][5]+" Alt: "+data_tab[1][6]);
+                        markerOptions.position(latLng).title(" V: "+data_tab[1][0]+" Te: "+data_tab[1][1]+" Lu: "+data_tab[1][2]+" Son: "+data_tab[1][3]+ " Alt: "+data_tab[1][6]);
 
                         googleMap.clear();
 
