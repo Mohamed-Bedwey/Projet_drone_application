@@ -135,7 +135,7 @@ public class MapFragment extends Fragment {
                 {
                     LatLng latLng = new LatLng(Double.parseDouble(data[5][i]),Double.parseDouble(data[4][i]));
                     MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-                    markerOptions.title(" Vit: "+data[1][0]+" Tem: "+data[1][1]+" Lum: "+data[1][2]+" Son: "+data[1][3]+ " Alt: "+data[1][6]);
+                    markerOptions.title(" Vit: "+data[0][i]+" Tem: "+data[1][i]+" Lum: "+data[2][i]+" Son: "+data[3][i]+ " Alt: "+data[6][i]);
                     googleMap.addMarker(markerOptions);
                 }
             }

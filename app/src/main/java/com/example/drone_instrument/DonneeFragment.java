@@ -1,8 +1,13 @@
 package com.example.drone_instrument;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,6 +28,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,8 +49,8 @@ import java.util.Random;
 
 public class DonneeFragment extends Fragment {
 
-    TextView long_msg,lati_msg,vit_msg,temp_msg,lum_msg,son_msg,alti_msg;
-    ImageView img_vit,img_son,img_lum,img_temp;
+    TextView long_msg, lati_msg, vit_msg, temp_msg, lum_msg, son_msg, alti_msg,cmd_drone;
+    ImageView img_vit, img_son, img_lum, img_temp;
 
     Workbook excel_file = new HSSFWorkbook();
     Cell cell = null;
@@ -55,6 +65,10 @@ public class DonneeFragment extends Fragment {
 
     Handler handler;
     Runnable run;
+    LocationManager locationManager;
+
+    String valLongitude = "20", valLatitude = "20";
+    String cmd_longitude, cmd_latitude;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,13 +85,15 @@ public class DonneeFragment extends Fragment {
         lum_msg = (TextView) view.findViewById(R.id.luminosite);
         son_msg = (TextView) view.findViewById(R.id.son);
         alti_msg = (TextView) view.findViewById(R.id.altitude);
+        cmd_drone = (TextView) view.findViewById(R.id.commande_drone);
 
         img_lum = (ImageView) view.findViewById(R.id.imageLuminosite);
         img_son = (ImageView) view.findViewById(R.id.imageSon);
         img_temp = (ImageView) view.findViewById(R.id.imageTemperature);
         img_vit = (ImageView) view.findViewById(R.id.imageVitesse);
 
-        myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"),"Drone_Data.xls"); // Chemin de la base de données Excel dans le stockage interne du téléphone
+        myExternfile = new File(getActivity().getExternalFilesDir("Save_Data"), "Drone_Data.xls"); // Chemin de la base de données Excel dans le stockage interne du téléphone
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         random = new Random();
         handler = new Handler();
@@ -135,7 +151,7 @@ public class DonneeFragment extends Fragment {
 
                 int val3 = random.nextInt(500); // Luminosite
                 lum_msg.setText(String.valueOf(val3));
-                save_data[3][cpt] = String.valueOf(val3);;
+                save_data[3][cpt] = String.valueOf(val3);
 
                 int val4 = random.nextInt(500); // Son
                 son_msg.setText(String.valueOf(val4));
@@ -153,31 +169,34 @@ public class DonneeFragment extends Fragment {
                 alti_msg.setText(String.valueOf(val7));
                 save_data[7][cpt] = String.valueOf(val7);
 
+
                 cpt++;
 
-                handler.postDelayed(this,1000); // Rafraichissement toutes les secondes
+                handler.postDelayed(this, 1000); // Rafraichissement toutes les secondes
 
             }
         };
         handler.post(run);
 
+        commande_drone(); // Fonction de suivie de personne
+
         return view;
     }
 
-    private void Graph_data (String val) // Affichage du graph_fragment
+    private void Graph_data(String val) // Affichage du graph_fragment
     {
         Bundle bundle = new Bundle();
         GraphFragment graphFragment = new GraphFragment();
         graphFragment.donneeFragment = this;
-        bundle.putString("data",val); // Envoie de donnée au GraphFragment
+        bundle.putString("data", val); // Envoie de donnée au GraphFragment
         graphFragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,graphFragment);
+        fragmentTransaction.replace(R.id.frame_layout, graphFragment);
         fragmentTransaction.commit();
     }
 
-    void write_data () // // Ecriture des données dans la base de données Excel
+    void write_data() // // Ecriture des données dans la base de données Excel
     {
 
         // =========== Creation des colonnes ============== //
@@ -208,18 +227,18 @@ public class DonneeFragment extends Fragment {
         cell.setCellValue("Altitude");
 
         // ================= taille des colones ============== //
-        sheet.setColumnWidth(0,(20*200));
-        sheet.setColumnWidth(1,(20*200));
-        sheet.setColumnWidth(2,(20*200));
-        sheet.setColumnWidth(3,(20*200));
-        sheet.setColumnWidth(4,(20*300));
-        sheet.setColumnWidth(5,(20*300));
-        sheet.setColumnWidth(6,(20*300));
-        sheet.setColumnWidth(7,(20*300));
+        sheet.setColumnWidth(0, (20 * 200));
+        sheet.setColumnWidth(1, (20 * 200));
+        sheet.setColumnWidth(2, (20 * 200));
+        sheet.setColumnWidth(3, (20 * 200));
+        sheet.setColumnWidth(4, (20 * 300));
+        sheet.setColumnWidth(5, (20 * 300));
+        sheet.setColumnWidth(6, (20 * 300));
+        sheet.setColumnWidth(7, (20 * 300));
 
-        for (int i =0;i<cpt;i++) // Ecriture des données du tableau dans la base de donnée Excel
+        for (int i = 0; i < cpt; i++) // Ecriture des données du tableau dans la base de donnée Excel
         {
-            row = sheet.createRow(i+1);
+            row = sheet.createRow(i + 1);
 
             cell = row.createCell(0);
             cell.setCellValue(save_data[0][i]);
@@ -254,9 +273,55 @@ public class DonneeFragment extends Fragment {
         }
     }
 
-    public void removeHandler()
-    {
+    public void removeHandler() {
         handler.removeCallbacks(run);
+    }
+
+    private void commande_drone() {
+
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+
+                cmd_drone.setText(location.getLatitude() + " " + location.getLongitude());
+
+                // Envoie de commande au drone pour suivre l'utilisateur
+                if(Double.parseDouble(valLatitude) > location.getLatitude())
+                {
+                    cmd_latitude = "Ouest";
+                }
+                else if (Double.parseDouble(valLatitude) < location.getLatitude())
+                {
+                    cmd_latitude = "Est";
+                }
+                else
+                {
+                    cmd_latitude = " ";
+                }
+
+                if(Double.parseDouble(valLongitude) > location.getLongitude())
+                {
+                    cmd_longitude = "Nord";
+                }
+                else if (Double.parseDouble(valLongitude) < location.getLongitude())
+                {
+                    cmd_longitude = "Sud";
+                }
+                else
+                {
+                    cmd_longitude = " ";
+                }
+
+                cmd_drone.setText(cmd_longitude + " " + cmd_latitude);
+
+            }
+        });
     }
 
 
