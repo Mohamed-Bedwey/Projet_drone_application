@@ -43,7 +43,7 @@ public class GraphFragment extends Fragment {
     ImageButton bp_refresh;
 
     GraphView graphView;
-    String[][] data_tab = new String[5][14400];
+    String[][] data = new String[5][14400];
     LineGraphSeries<DataPoint> series;
     DonneeFragment donneeFragment;
     @Override
@@ -80,13 +80,13 @@ public class GraphFragment extends Fragment {
         return view;
     }
 
-    void creation_graph(String title, int color, int data) // Creation d'un graphique
+    void creation_graph(String title, int color, int type_data) // Creation d'un graphique type_data : permet de choisir la colonne de données a afichier
     {
         series = new LineGraphSeries<>();
 
         for (int i=0;i<nb_ligne;i++) // Ajout de points sur le graphique
         {
-            series.appendData(new DataPoint(Double.parseDouble(data_tab[0][i]), Double.parseDouble(data_tab[data][i])),true,nb_ligne);
+            series.appendData(new DataPoint(Double.parseDouble(data[0][i]), Double.parseDouble(data[type_data][i])),true,nb_ligne); // creation d'un point avec des cordonnées x et y
         }
 
         graphView.addSeries(series);
@@ -117,19 +117,19 @@ public class GraphFragment extends Fragment {
                 Row row = sheet.getRow(i+1); // Le numéro de ligne du tableau Excel
 
                 Cell cell_time = row.getCell(0); // Le numéro de colonne tableau Excel
-                data_tab[0][i] = cell_time.getStringCellValue(); // Recupération du contenu
+                data[0][i] = cell_time.getStringCellValue(); // Recupération du contenu
 
                 Cell cell_vitesse = row.getCell(1);
-                data_tab[1][i] = cell_vitesse.getStringCellValue();
+                data[1][i] = cell_vitesse.getStringCellValue();
 
                 Cell cell_Temperature = row.getCell(2);
-                data_tab[2][i] = cell_Temperature.getStringCellValue();
+                data[2][i] = cell_Temperature.getStringCellValue();
 
                 Cell cell_Luminosite = row.getCell(3);
-                data_tab[3][i] = cell_Luminosite.getStringCellValue();
+                data[3][i] = cell_Luminosite.getStringCellValue();
 
                 Cell cell_Son = row.getCell(4);
-                data_tab[4][i] = cell_Son.getStringCellValue();
+                data[4][i] = cell_Son.getStringCellValue();
             }
 
         } catch (FileNotFoundException e) {
